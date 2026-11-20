@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Emo Symbols – Canvas Art</title>
+<style>
+:root{--bg:#0d0a12;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d0a12}}
+:root[data-theme="dark"]{--bg:#0d0a12}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);padding:32px 20px 48px;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:960px;width:100%}
+@media (max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}}
+figure{margin:0}
+canvas{width:200px;max-width:100%;height:auto;aspect-ratio:1;display:block;margin:0 auto}
+</style>
+</head>
+<body>
+<div class="grid" id="grid"></div>
+<script>
+const BONE='#e8e0d0',BLK='#1b1426',PLUM='#4b2a6e',VIO='#7a3aa8',BLOOD='#b0122a',ROSE='#e0245e',SILV='#9aa0ad',TEAL='#3ddc97',INK='#0b0710';
+
+function circ(c,x,y,r,f){c.fillStyle=f;c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fill();}
+function poly(c,pts,f){c.fillStyle=f;c.beginPath();c.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);c.closePath();c.fill();}
+function rr(c,x,y,w,h,r,f){c.fillStyle=f;c.beginPath();c.roundRect(x,y,w,h,r);c.fill();}
+function heartPath(c,x,y,s){
+  c.beginPath();c.moveTo(x,y+s*.9);
+  c.bezierCurveTo(x-s*1.4,y+s*.1,x-s*.9,y-s*.95,x,y-s*.35);
+  c.bezierCurveTo(x+s*.9,y-s*.95,x+s*1.4,y+s*.1,x,y+s*.9);c.closePath();
+}
+function heart(c,x,y,s,f){c.fillStyle=f;heartPath(c,x,y,s);c.fill();}
+function star(c,x,y,r,f){c.fillStyle=f;c.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,d=i%2?r*.42:r;c.lineTo(x+Math.cos(a)*d,y+Math.sin(a)*d);}c.closePath();c.fill();}
+function skull(c,x,y,r){
+  circ(c,x,y,r,BONE);
+  rr(c,x-r*.55,y+r*.5,r*1.1,r*.8,r*.2,BONE);
+  circ(c,x-r*.38,y-r*.05,r*.28,INK);circ(c,x+r*.38,y-r*.05,r*.28,INK);
+  poly(c,[[x,y+r*.18],[x-r*.12,y+r*.42],[x+r*.12,y+r*.42]],INK);
+  c.strokeStyle=INK;c.lineWidth=1.5;c.beginPath();
+  for(let i=-1;i<=1;i++){c.moveTo(x+i*r*.25,y+r*.85);c.lineTo(x+i*r*.25,y+r*1.2);}c.stroke();
+}
+function bone(c,x1,y1,x2,y2,w){
+  c.strokeStyle=BONE;c.lineWidth=w;c.lineCap='butt';c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();
+  const a=Math.atan2(y2-y1,x2-x1)+Math.PI/2,dx=Math.cos(a)*w*.45,dy=Math.sin(a)*w*.45;
+  [[x1,y1],[x2,y2]].forEach(p=>{circ(c,p[0]+dx,p[1]+dy,w*.55,BONE);circ(c,p[0]-dx,p[1]-dy,w*.55,BONE);});
+}
+function wing(c,s){
+  c.save();c.translate(100,100);c.scale(s,1);
+  c.fillStyle=PLUM;c.strokeStyle=VIO;c.lineWidth=3;c.lineJoin='round';
+  c.beginPath();c.moveTo(24,-8);c.quadraticCurveTo(64,-70,96,-40);c.lineTo(82,2);c.lineTo(68,-8);c.lineTo(56,26);c.lineTo(42,8);c.lineTo(30,30);c.closePath();c.fill();c.stroke();
+  c.restore();
+}
+
+const arts=[
+{name:'Bleeding heart and dagger',draw(c){
+  heart(c,100,84,58,BLOOD);
+  c.fillStyle='rgba(255,255,255,.18)';c.beginPath();c.ellipse(66,64,10,16,-.6,0,7);c.fill();
+  [[84,126,32],[108,132,44],[124,120,24]].forEach(d=>rr(c,d[0],d[1],8,d[2],4,BLOOD));
+  circ(c,88,160,5,BLOOD);circ(c,112,178,5,BLOOD);
+  c.save();c.translate(100,92);c.rotate(.5);
+  poly(c,[[-6,-8],[6,-8],[0,96]],SILV);
+  c.fillStyle='#c9ced8';c.fillRect(0,-8,6,0);
+  rr(c,-22,-16,44,8,3,BLK);rr(c,-4,-46,8,30,3,PLUM);circ(c,0,-50,6,VIO);
+  c.restore();
+}},
+{name:'Coffin',draw(c){
+  const p=[[84,16],[116,16],[142,66],[122,184],[78,184],[58,66]];
+  poly(c,p,BLK);
+  c.strokeStyle=VIO;c.lineWidth=5;c.lineJoin='round';c.beginPath();p.forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));c.closePath();c.stroke();
+  poly(c,[[90,30],[110,30],[128,70],[112,170],[88,170],[72,70]],PLUM);
+  c.fillStyle=BONE;c.fillRect(96,56,8,70);c.fillRect(80,76,40,8);
+  circ(c,100,150,5,BLOOD);
+}},
+{name:'Winged heart',draw(c){
+  wing(c,1);wing(c,-1);
+  heart(c,100,96,46,BLOOD);
+  c.strokeStyle=BONE;c.lineWidth=2.5;c.beginPath();c.arc(100,96,64,Math.PI*1.15,Math.PI*1.85);c.stroke();
+  c.fillStyle='rgba(255,255,255,.18)';c.beginPath();c.ellipse(76,78,7,12,-.6,0,7);c.fill();
+}},
+{name:'Skull and crossbones',draw(c){
+  bone(c,48,58,152,162,12);bone(c,152,58,48,162,12);
+  skull(c,100,86,36);
+  circ(c,88,84,3,ROSE);circ(c,112,84,3,ROSE);
+}},
+{name:'Stitched broken heart',draw(c){
+  const z=[[100,0],[96,50],[88,76],[110,98],[92,122],[106,146],[100,190],[100,200]];
+  [[-1,[[0,0],...z,[0,200]]],[1,[[200,0],...z,[200,200]]]].forEach(h=>{
+    c.save();c.beginPath();h[1].forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));c.closePath();c.clip();
+    c.translate(h[0]*5,h[0]*2);heart(c,100,98,64,BLOOD);c.restore();
+  });
+  c.strokeStyle=BONE;c.lineWidth=3;c.lineCap='round';
+  for(let i=1;i<z.length-2;i++){const mx=(z[i][0]+z[i+1][0])/2,my=(z[i][1]+z[i+1][1])/2;c.beginPath();c.moveTo(mx-10,my-3);c.lineTo(mx+10,my+3);c.stroke();}
+  c.beginPath();c.moveTo(94,64);c.lineTo(106,60);c.moveTo(98,152);c.lineTo(110,150);c.stroke();
+  c.lineCap='butt';
+}},
+{name:'Bat',draw(c){
+  [1,-1].forEach(s=>{
+    c.save();c.translate(100,100);c.scale(s,1);
+    c.fillStyle=PLUM;c.strokeStyle=VIO;c.lineWidth=3;c.lineJoin='round';
+    c.beginPath();c.moveTo(10,-6);c.quadraticCurveTo(50,-62,84,-36);c.lineTo(70,10);c.lineTo(56,-2);c.lineTo(44,30);c.lineTo(28,14);c.lineTo(12,34);c.closePath();c.fill();c.stroke();
+    c.restore();
+  });
+  c.fillStyle=BLK;c.beginPath();c.ellipse(100,108,15,28,0,0,7);c.fill();
+  circ(c,100,78,13,BLK);
+  poly(c,[[89,70],[88,52],[98,66]],BLK);poly(c,[[111,70],[112,52],[102,66]],BLK);
+  circ(c,94,78,3,ROSE);circ(c,106,78,3,ROSE);
+  poly(c,[[95,86],[97,94],[99,86]],BONE);poly(c,[[101,86],[103,94],[105,86]],BONE);
+}},
+{name:'Lightning bolt and stars',draw(c){
+  c.lineJoin='round';c.lineWidth=5;c.strokeStyle=BONE;
+  const b=[[112,14],[58,108],[92,108],[78,186],[142,84],[106,84]];
+  c.fillStyle=ROSE;c.beginPath();b.forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));c.closePath();c.fill();c.stroke();
+  star(c,156,36,14,BONE);star(c,44,154,12,VIO);star(c,160,150,8,BONE);
+}},
+{name:'Poison bottle',draw(c){
+  rr(c,86,30,28,16,3,'#6b4a3a');
+  rr(c,88,44,24,44,4,'#2d2347');
+  circ(c,100,132,52,'#2d2347');
+  c.save();c.beginPath();c.arc(100,132,48,0,Math.PI*2);c.clip();
+  c.fillStyle=BLOOD;c.beginPath();c.moveTo(40,118);c.quadraticCurveTo(70,106,100,118);c.quadraticCurveTo(130,130,160,118);c.lineTo(160,190);c.lineTo(40,190);c.fill();
+  c.restore();
+  c.strokeStyle=VIO;c.lineWidth=4;c.beginPath();c.arc(100,132,50,0,Math.PI*2);c.stroke();
+  c.strokeRect(88,44,24,44);
+  skull(c,100,144,13);
+  circ(c,82,108,3,TEAL);circ(c,120,100,2,TEAL);circ(c,110,86,3,TEAL);
+}}
+];
+
+const grid=document.getElementById('grid');
+arts.forEach(a=>{
+  const f=document.createElement('figure');
+  const cv=document.createElement('canvas');cv.width=200;cv.height=200;
+  cv.setAttribute('role','img');cv.setAttribute('aria-label',a.name);
+  a.draw(cv.getContext('2d'));
+  f.append(cv);grid.append(f);
+});
+</script>
+</body>
+</html>
