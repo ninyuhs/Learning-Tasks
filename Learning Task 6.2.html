@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beating Heart</title>
+<style>
+  body { margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; background: #1b1b1b; }
+  svg { background: #fff0f3; border-radius: 12px; }
+
+
+  .heart {
+    transform-origin: 150px 150px;
+    animation: beat 1.2s ease-in-out infinite;
+  }
+  @keyframes beat {
+    0%   { transform: scale(1); }
+    14%  { transform: scale(1.18); }
+    28%  { transform: scale(1); }
+    42%  { transform: scale(1.12); }
+    70%  { transform: scale(1); }
+    100% { transform: scale(1); }
+  }
+
+</style>
+</head>
+<body>
+<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Heart -->
+  <g class="heart">
+    <path fill="#e60000"
+          d="M150,235 C60,170 55,95 100,80 C128,71 146,88 150,105 C154,88 172,71 200,80 C245,95 240,170 150,235 Z"/>
+  </g>
+</svg>
+</body>
+</html>
